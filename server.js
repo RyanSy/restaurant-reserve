@@ -10,13 +10,24 @@ var mysql = require('mysql');
 var app = express();
 var PORT = 3000;
 
-// var connection = mysql.createConnection({
-// 	host: 'localhost',
-// 	user: 'root',
-// 	password: '1111',
-// 	database:
-// });
+var connection = mysql.createConnection({
+	host: 'localhost',
+	user: 'root',
+	password: '1111',
+	database: 'restaurantreservations'
+	});
 // Sets up the Express app to handle data parsing
+
+connection.connect(function(err){
+    if(err){
+        console.log("Not Connected")
+        console.log("error: "+ err)
+        return;
+    }else{
+        console.log("Connected")
+    };
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.text());
@@ -26,25 +37,9 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 // Reservations (DATA)
 // =============================================================
 var tableData = [
-
-	{
-		customerName: "ryan",
-		phoneNumber: 2018675309,
-		customerEmail: "ry@ryan.com",
-		customerID: 101,
-	}
-
 ];
 
 waitlistData = [
-
-	{
-		customerName: "ass",
-		phoneNumber: 201999999,
-		customerEmail: "ass@ryan.com",
-		customerID: 102,
-	}
-
 ];
 
 // Routes
@@ -65,7 +60,33 @@ app.get('/reserve', function(req, res){
 app.post('/api/tables', function(req, res){
 	res.sendFile(path.join(__dirname + '/api/tables'));
 
-	//console.log(req.body);
+	connection.query("INSERT INTO customers (customer_name,customer_email,phone_number) VALUES ('"+req.body.customerName+"','"+req.body.customerEmail+"','"+req.body.phoneNumber+"');", function (err, res) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(res);
+		}
+	});
+
+	connection.query("INSERT INTO reservations (customer_id) VALUES ('"+req.body.customerID+"');", function (err, res) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(res);
+		}
+	});
+
+	connection.query("INSERT INTO waitings (customer_id) VALUES ('"+req.body.customerID+"');", function (err, res) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(res);
+		}
+	});
+
 	// req.body hosts is equal to the JSON post sent from the user
 	var newTable = req.body;
 
@@ -85,7 +106,7 @@ app.post('/api/tables', function(req, res){
 
 app.post('/api/waitlist', function(req, res){
 
-	console.log(req.body);
+	console.log(req.body.customerID);
 	// req.body hosts is equal to the JSON post sent from the user
 	var newTable2 = req.body;
 
