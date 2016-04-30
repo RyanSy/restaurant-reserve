@@ -3,12 +3,19 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var mysql = require('mysql');
 
 // Sets up the Express App
 // =============================================================
 var app = express();
 var PORT = 3000;
 
+// var connection = mysql.createConnection({
+// 	host: 'localhost',
+// 	user: 'root',
+// 	password: '1111',
+// 	database:
+// });
 // Sets up the Express app to handle data parsing
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -32,10 +39,10 @@ var tableData = [
 waitlistData = [
 
 	{
-		customerName: "ryan",
-		phoneNumber: 2018675309,
-		customerEmail: "ry@ryan.com",
-		customerID: 101,
+		customerName: "ass",
+		phoneNumber: 201999999,
+		customerEmail: "ass@ryan.com",
+		customerID: 102,
 	}
 
 ];
@@ -58,16 +65,20 @@ app.get('/reserve', function(req, res){
 app.post('/api/tables', function(req, res){
 	res.sendFile(path.join(__dirname + '/api/tables'));
 
-	console.log(req.body);
+	//console.log(req.body);
 	// req.body hosts is equal to the JSON post sent from the user
 	var newTable = req.body;
 
 	// We then add the json the user sent to the character array
-	if (tableData.length<=5){
+	if (tableData.length<=4){
 	tableData.push(newTable);
 	}
+	else {
+		waitlistData.push(newTable);
 
-	console.log(tableData);
+	}
+
+	//console.log(tableData);
 	// We then display the JSON to the users
 	res.json(newTable);
 });
@@ -79,10 +90,7 @@ app.post('/api/waitlist', function(req, res){
 	var newTable2 = req.body;
 
 	// We then add the json the user sent to the character array
-	if (tableData.length>5){
-	waitlistData.push(newTable2);
-	}
-	// We then display the JSON to the users
+//We then display the JSON to the users
 	res.json(newTable2);
 });
 
@@ -90,7 +98,7 @@ app.get('/api/tables', function(req, res){
 	res.json(tableData);
 	});
 
-app.get('/reserve', function(req, res){
+app.get('/api/waitlist', function(req, res){
 	res.json(waitlistData);
 });
 
